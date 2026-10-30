@@ -8,6 +8,7 @@ GSF ?= 12
 ITERATIONS ?= 12
 CLOCK_MHZ ?= 80
 IBEX_CONFIG ?= small
+CV_FORWARDING ?= 1
 WORKLOAD ?= all
 BUILD ?= $(CURDIR)/build/$(IBEX_CONFIG)
 EMBENCH_DIR ?= $(CURDIR)/.deps/embench
@@ -16,7 +17,7 @@ TFLM_DIR ?= $(CURDIR)/.deps/tflm
 TIMEOUT ?= 1800
 ARGS = --riscv-tools '$(RISCV_TOOLS)' --verilator '$(VERILATOR)' \
  --host-cxx '$(HOST_CXX)' --jobs '$(JOBS)' --gsf '$(GSF)' \
- --iterations '$(ITERATIONS)' --clock-mhz '$(CLOCK_MHZ)' --ibex-config '$(IBEX_CONFIG)' \
+ --iterations '$(ITERATIONS)' --clock-mhz '$(CLOCK_MHZ)' --ibex-config '$(IBEX_CONFIG)' --cv-forwarding '$(CV_FORWARDING)' \
  --workload '$(WORKLOAD)' --build-dir '$(BUILD)' --timeout '$(TIMEOUT)' \
  --embench-dir '$(EMBENCH_DIR)' --tiny-dir '$(TINY_DIR)' --tflm-dir '$(TFLM_DIR)'
 .PHONY: all prepare build sim run check

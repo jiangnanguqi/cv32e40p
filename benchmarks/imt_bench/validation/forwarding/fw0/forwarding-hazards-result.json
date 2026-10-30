@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "name": "forwarding-hazards",
+  "target": {
+    "name": "forwarding-hazards",
+    "workload": "smoke",
+    "gsf": 1,
+    "elf_sha256": "199f9ea601a454ab845a3c3bb2b9b692a41fc399e0c4f1257d8c8ed8f98183c5",
+    "binary_sha256": "544d626e5d8801dc3fe9867a119a9c2b574c1296515d46993f07829ded58c61c",
+    "binary_bytes": 60024
+  },
+  "config": {
+    "core": {
+      "core": "cv32e40p",
+      "source_commit": "b353438ff469c030c89f6804f3b24a2852880e8b"
+    },
+    "ibex_config": null,
+    "harts": 1,
+    "cache": false,
+    "ram_bytes": 1048576,
+    "ram_base": "0x00100000",
+    "memory_response_cycles": 1,
+    "isa": "rv32im",
+    "abi": "ilp32",
+    "clock_mhz_assumed": 80,
+    "compiler": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 12.2.0",
+    "cv_forwarding": 0
+  },
+  "sim_returncode": 0,
+  "host_wall_seconds": 0.029699311000058515,
+  "gsf": 1,
+  "cycles": 19929,
+  "instructions": 9556,
+  "ipc": 0.4795022329268905,
+  "sim_config": {
+    "core": "cv32e40p",
+    "harts": "1",
+    "cache": "0",
+    "corev_pulp": "0",
+    "fpu": "0",
+    "memory_bytes": "1048576",
+    "memory_response_cycles": "1"
+  },
+  "audit": {
+    "windows": "1",
+    "cycles": "19929",
+    "instructions": "9556",
+    "output_writes": "71",
+    "output_during_measurement": "0"
+  },
+  "forwarding_audit": {
+    "forwarding": "0",
+    "ex_operands": "0",
+    "wb_operands": "0",
+    "raw_stall_cycles": "8769"
+  }
+}

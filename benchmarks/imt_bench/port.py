@@ -111,6 +111,7 @@ def build(a):
                 ram_bytes=1048576,ram_base='0x00100000',memory_response_cycles=1,
                 isa='rv32im',abi='ilp32',clock_mhz_assumed=a.clock_mhz,
                 compiler=subprocess.check_output([a.riscv_tools+'-gcc','--version'],text=True).splitlines()[0],
+                cv_forwarding=a.cv_forwarding if CORE['core']=='cv32e40p' else None,
                 targets=metadata)
     write(a.build_dir/'config.json',json.dumps(config,indent=2)+'\n')
     return metadata
@@ -129,6 +130,12 @@ def parse_result(text,meta,config):
         expected=(2,0,0) if config['ibex_config']=='small' else (3,1,1)
         if tuple(int(sim[k]) for k in ['rv32m','branch_target_alu','writeback_stage'])!=expected:raise ValueError('Ibex configuration mismatch')
     elif int(sim['corev_pulp']) or int(sim['fpu']):raise ValueError('CV32E40P extension configuration mismatch')
+    forwarding=None
+    if CORE['core']=='cv32e40p' and config.get('cv_forwarding') is not None:
+        forwarding=exactly(text,'BENCH_CV_FWD')
+        if int(forwarding['forwarding'])!=config['cv_forwarding']:raise ValueError('Forwarding configuration mismatch')
+        if not config['cv_forwarding'] and any(int(forwarding[k]) for k in ['ex_operands','wb_operands']):
+            raise ValueError('Inter-instruction forwarding used in disabled variant')
     if int(exit_['exit'])!=0:raise ValueError('Program returned failure')
     if int(audit['windows'])!=1 or int(audit['output_during_measurement'])!=0 or int(audit['output_writes'])==0:raise ValueError('Measurement/output audit failed')
     if 'BENCH_TRAP' in text or 'TINY_ERROR' in text:raise ValueError('Target error/trap')
@@ -155,6 +162,7 @@ def parse_result(text,meta,config):
     if cycles!=int(audit['cycles']) or instructions!=int(audit['instructions']):raise ValueError('Software counters disagree with RTL audit')
     if meta['workload']=='tiny' and (int(total['window_cycles'])!=cycles or int(total['instructions'])!=instructions):raise ValueError('Tiny totals disagree')
     result.update(cycles=cycles,instructions=instructions,ipc=instructions/cycles,sim_config=sim,audit=audit)
+    if forwarding is not None:result['forwarding_audit']=forwarding
     if meta['workload']=='tiny':
         result.update(cycles_per_inference=cycles/meta['iterations'],
                       ms_per_inference=cycles/meta['iterations']/(config['clock_mhz_assumed']*1000),
@@ -164,7 +172,9 @@ def parse_result(text,meta,config):
 def run_one(a,name,meta,sim,config):
     if name=='tiny':elf=a.build_dir/'tiny/tiny.elf'
     else:elf=a.build_dir/'embench'/name/(name+'.elf')
-    folder=a.build_dir/'runs'/name;folder.mkdir(parents=True,exist_ok=True)
+    folder=a.build_dir/'runs'
+    if config.get('cv_forwarding') is not None:folder=folder/('fw'+str(config['cv_forwarding']))
+    folder=folder/name;folder.mkdir(parents=True,exist_ok=True)
     for log in ['program.log','ibex_simple_system.log']:
         p=folder/log
         if p.exists():p.unlink()
@@ -205,18 +215,21 @@ def main():
     p.add_argument('--clock-mhz',type=float,default=80)
     p.add_argument('--timeout',type=float,default=1800)
     p.add_argument('--ibex-config',choices=['small','maxperf'],default='small')
+    p.add_argument('--cv-forwarding',type=int,choices=[0,1],default=1,
+                   help='CV32E40P: 1=original RTL, 0=experimental generated RAW-interlocked controller')
     p.add_argument('--build-dir',type=Path)
     for dep in ['embench','tiny','tflm']:p.add_argument('--'+dep+'-dir',type=Path,default=HERE/'.deps'/dep)
     a=p.parse_args()
     if not 0<a.iterations<2**32 or not 0<a.gsf<2**32 or not a.jobs>0 or not a.clock_mhz>0:p.error('positive parameters required')
     if not a.build_dir:a.build_dir=HERE/'build'/a.ibex_config
     for key in ['build_dir','embench_dir','tiny_dir','tflm_dir']:setattr(a,key,getattr(a,key).resolve())
-    if a.action=='sim':build_sim.build(HERE,a.build_dir/'sim',a.verilator,a.jobs,a.ibex_config);return
+    sim_dir=a.build_dir/('sim-fw'+str(a.cv_forwarding) if CORE['core']=='cv32e40p' else 'sim')
+    if a.action=='sim':build_sim.build(HERE,sim_dir,a.verilator,a.jobs,a.ibex_config,a.cv_forwarding);return
     prepare(a)
     if a.action=='prepare':return
     build(a)
     if a.action=='build':return
-    sim=build_sim.build(HERE,a.build_dir/'sim',a.verilator,a.jobs,a.ibex_config)
+    sim=build_sim.build(HERE,sim_dir,a.verilator,a.jobs,a.ibex_config,a.cv_forwarding)
     config=json.loads((a.build_dir/'config.json').read_text())
     results=[]
     for name,meta in config['targets'].items():results.append(run_one(a,name,meta,sim,config))

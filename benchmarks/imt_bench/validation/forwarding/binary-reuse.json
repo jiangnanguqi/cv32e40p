@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "all_20_images_identical_to_archived_baseline": {
+    "aha-mont64": true,
+    "crc32": true,
+    "depthconv": true,
+    "edn": true,
+    "huffbench": true,
+    "matmult-int": true,
+    "md5sum": true,
+    "nettle-aes": true,
+    "nettle-sha256": true,
+    "nsichneu": true,
+    "picojpeg": true,
+    "qrduino": true,
+    "sglib-combined": true,
+    "slre": true,
+    "statemate": true,
+    "tarfind": true,
+    "ud": true,
+    "wikisort": true,
+    "xgboost": true,
+    "tiny": true
+  }
+}

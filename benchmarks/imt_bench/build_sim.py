@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Compile unchanged core/SoC RTL plus additive loading and measurement hooks."""
+"""Compile protected original RTL, with an explicit generated experiment option."""
 import argparse,json,os,subprocess
 from pathlib import Path
 
-def build(here,output,verilator,jobs,ibex_config):
+def build(here,output,verilator,jobs,ibex_config,cv_forwarding=1):
     root=here.parents[1]
     core=json.loads((here/'core.json').read_text())['core']
     revision=json.loads((here/'core.json').read_text())['source_commit']
@@ -49,7 +49,14 @@ def build(here,output,verilator,jobs,ibex_config):
         # counters and flop assignments for implemented counters (disjoint bits).
         # Verilator 5.020 otherwise diagnoses the entire packed array as mixed.
         args+=['--top-module','bench_top','-I'+str(rtl/'include'),'-Wno-BLKANDNBLK']
+        if not cv_forwarding:
+            from no_forwarding import generate
+            files=[f for f in files if f.name!='cv32e40p_controller.sv']
+            # It has the same module interface/name; all other RTL is original.
+            files.insert(-3,generate(root,output))
+            args+=['-DCV_FORWARDING_OFF']
         files.append(here/'cv32e40p_top.sv')
+        files.append(here/'cv_forward_audit.sv')
     files += [here/'bench_audit.sv',here/'sim_main.cc']
     args+=list(map(str,files))
     (output/'command.json').write_text(json.dumps(args,indent=2)+'\n')
@@ -67,4 +74,5 @@ if __name__=='__main__':
     p.add_argument('--verilator',default='verilator')
     p.add_argument('--jobs',type=int,default=2)
     p.add_argument('--ibex-config',choices=['small','maxperf'],default='small')
-    a=p.parse_args();build(Path(__file__).resolve().parent,a.build_dir.resolve(),a.verilator,a.jobs,a.ibex_config)
+    p.add_argument('--cv-forwarding',type=int,choices=[0,1],default=1)
+    a=p.parse_args();build(Path(__file__).resolve().parent,a.build_dir.resolve(),a.verilator,a.jobs,a.ibex_config,a.cv_forwarding)

@@ -1,0 +1,8 @@
+BENCH_SIM_CONFIG core=cv32e40p harts=1 cache=0 corev_pulp=0 fpu=0 memory_bytes=1048576 memory_response_cycles=1
+BENCH_CV_FWD forwarding=1 ex_operands=2817 wb_operands=1024 raw_stall_cycles=0
+BENCH_AUDIT windows=1 cycles=16152 instructions=9556 output_writes=71 output_during_measurement=0
+BENCH_SIM_EXIT exit=0
+- /workspace/scratch/5fbe2b505eeb/cv32e40p/benchmarks/imt_bench/cv32e40p_top.sv:46: Verilog $finish
+
+EMBENCH_STATS gsf=1 cycles=16152 instructions=9556
+EMBENCH_PASS exit=0

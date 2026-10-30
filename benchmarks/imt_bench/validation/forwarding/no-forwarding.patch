@@ -1,0 +1,62 @@
+--- rtl/cv32e40p_controller.sv
++++ generated/cv32e40p_controller_no_forwarding.sv
+@@ -1361,6 +1361,14 @@
+       load_stall_o    = 1'b1;
+     end
+ 
++    // Wait until a preceding producer has written the register file.
++    // Reuse the existing load interlock's bubble/hold protocol.
++    if (is_decoding_o && instr_valid_i && !data_misaligned_i &&
++        !mult_multicycle_i && noforward_raw_hazard) begin
++      deassert_we_o = 1'b1;
++      load_stall_o = 1'b1;
++    end
++
+     // Stall because of jr path
+     // - always stall if a result is to be forwarded to the PC
+     // we don't care about in which state the ctrl_fsm is as we deassert_we
+@@ -1383,6 +1391,14 @@
+   end
+ 
+ 
++  // Experimental no-forwarding variant: interlock ordinary RAW hazards.
++  // Internal multi-cycle replay is a separate path and remains unchanged.
++  wire noforward_raw_hazard =
++      (regfile_alu_we_fw_i &&
++       (reg_d_alu_is_reg_a_i || reg_d_alu_is_reg_b_i || reg_d_alu_is_reg_c_i)) ||
++      (regfile_we_wb_i &&
++       (reg_d_wb_is_reg_a_i || reg_d_wb_is_reg_b_i || reg_d_wb_is_reg_c_i));
++
+   // stall because of misaligned data access
+   assign misaligned_stall_o = data_misaligned_i;
+ 
+@@ -1397,27 +1413,8 @@
+     operand_b_fw_mux_sel_o = SEL_REGFILE;
+     operand_c_fw_mux_sel_o = SEL_REGFILE;
+ 
+-    // Forwarding WB -> ID
+-    if (regfile_we_wb_i == 1'b1)
+-    begin
+-      if (reg_d_wb_is_reg_a_i == 1'b1)
+-        operand_a_fw_mux_sel_o = SEL_FW_WB;
+-      if (reg_d_wb_is_reg_b_i == 1'b1)
+-        operand_b_fw_mux_sel_o = SEL_FW_WB;
+-      if (reg_d_wb_is_reg_c_i == 1'b1)
+-        operand_c_fw_mux_sel_o = SEL_FW_WB;
+-    end
+-
+-    // Forwarding EX -> ID
+-    if (regfile_alu_we_fw_i == 1'b1)
+-    begin
+-     if (reg_d_alu_is_reg_a_i == 1'b1)
+-       operand_a_fw_mux_sel_o = SEL_FW_EX;
+-     if (reg_d_alu_is_reg_b_i == 1'b1)
+-       operand_b_fw_mux_sel_o = SEL_FW_EX;
+-     if (reg_d_alu_is_reg_c_i == 1'b1)
+-       operand_c_fw_mux_sel_o = SEL_FW_EX;
+-    end
++    // All ordinary operands use SEL_REGFILE. The existing replay
++    // selections below serve the same instruction, not a following consumer.
+ 
+     // for misaligned memory accesses
+     if (data_misaligned_i)

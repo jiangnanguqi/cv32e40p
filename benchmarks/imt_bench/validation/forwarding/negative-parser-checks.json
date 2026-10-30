@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "name": "forwarding_mode_mismatch",
+      "rejected": true
+    },
+    {
+      "name": "ex_forwarding_when_disabled",
+      "rejected": true
+    },
+    {
+      "name": "wb_forwarding_when_disabled",
+      "rejected": true
+    },
+    {
+      "name": "missing_forwarding_audit",
+      "rejected": true
+    }
+  ]
+}

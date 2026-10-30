@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "name": "tarfind",
+  "target": {
+    "workload": "embench",
+    "name": "tarfind",
+    "gsf": 12,
+    "warmup_heat": 1,
+    "embench_commit": "09c2ed8c3b7008c95d08b038de4a3f6dc103ed70",
+    "elf_sha256": "7fa6f7181e98dfc9f15ad58be16f0c6e2cde9bbfdcf8cb505a24bdcb391f9d54",
+    "binary_sha256": "adb610530b5bc9b143578cf1b2f718038e996bd4813a3655e0cedd0784f9c303",
+    "binary_bytes": 61208
+  },
+  "config": {
+    "core": {
+      "core": "cv32e40p",
+      "source_commit": "b353438ff469c030c89f6804f3b24a2852880e8b"
+    },
+    "ibex_config": null,
+    "harts": 1,
+    "cache": false,
+    "ram_bytes": 1048576,
+    "ram_base": "0x00100000",
+    "memory_response_cycles": 1,
+    "isa": "rv32im",
+    "abi": "ilp32",
+    "clock_mhz_assumed": 80,
+    "compiler": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 12.2.0",
+    "cv_forwarding": 0
+  },
+  "sim_returncode": 0,
+  "host_wall_seconds": 20.254899018999822,
+  "gsf": 12,
+  "cycles": 32573091,
+  "instructions": 12363872,
+  "ipc": 0.37957318818775904,
+  "sim_config": {
+    "core": "cv32e40p",
+    "harts": "1",
+    "cache": "0",
+    "corev_pulp": "0",
+    "fpu": "0",
+    "memory_bytes": "1048576",
+    "memory_response_cycles": "1"
+  },
+  "audit": {
+    "windows": "1",
+    "cycles": "32573091",
+    "instructions": "12363872",
+    "output_writes": "79",
+    "output_during_measurement": "0"
+  },
+  "forwarding_audit": {
+    "forwarding": "0",
+    "ex_operands": "0",
+    "wb_operands": "0",
+    "raw_stall_cycles": "4877190"
+  }
+}

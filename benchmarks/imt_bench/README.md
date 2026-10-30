@@ -116,3 +116,6 @@ slices use sequential assignments. These are disjoint slices. The independent
 measurement audit validates the implemented cycle and instruction counters.
 
 `VALIDATION.md` and `validation/` contain the actual recorded results.
+
+For the optional generated no-forwarding experiment and its validation, see
+[FORWARDING.md](FORWARDING.md). Normal builds use the original controller.
