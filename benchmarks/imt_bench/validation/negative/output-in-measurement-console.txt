@@ -1,0 +1,5 @@
+BENCH_SIM_CONFIG core=cv32e40p harts=1 cache=0 corev_pulp=0 fpu=0 memory_bytes=1048576 memory_response_cycles=1
+[59225] %Fatal: bench_audit.sv:25: Assertion failed in TOP.bench_top.audit: Output occurred with performance counters enabled
+%Error: /workspace/scratch/5fbe2b505eeb/cv32e40p/benchmarks/imt_bench/bench_audit.sv:25: Verilog $stop
+Aborting...
+
