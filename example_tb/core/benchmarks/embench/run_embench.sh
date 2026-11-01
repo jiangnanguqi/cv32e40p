@@ -7,12 +7,15 @@
 # Each log holds the program's output ("Embench cycles=... instret=..." and
 # "Main Exit=...") followed by the testbench's EXIT SUCCESS/FAILURE line and
 # the number of cycles simulated.
+# Environment: SIM (simulator binary) and LOG_DIR (where the logs go)
+# override the defaults below, e.g. to keep runs of different
+# configurations apart.
 set -euo pipefail
 
 CORE_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 EMB_DIR="$CORE_DIR/benchmarks/embench"
 SIM="${SIM:-$CORE_DIR/cobj_dir/Vtb_top_verilator}"
-LOG_DIR="$EMB_DIR/runlogs"
+LOG_DIR="${LOG_DIR:-$EMB_DIR/runlogs}"
 
 mkdir -p "$LOG_DIR"
 cd "$LOG_DIR"

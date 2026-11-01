@@ -9,14 +9,14 @@ Configuration:
 
 - Ibex: fork revision `bd9917e`, official `small` configuration (RV32MFast,
   no branch-target ALU, no writeback stage, no instruction cache), Simple
-  System built with `-Wno-MULTIDRIVEN` in place of `-Wall` as on this fork's
+  System with `-Wno-MULTIDRIVEN` in place of `-Wall` as on this fork's
   `localBranch`.
 - CV32E40P: fork revision `b353438`, `COREV_PULP=0`, `COREV_CLUSTER=0`,
   `FPU=0`, `ZFINX=0`, example testbench with memory stalls disabled.
 - One hart; no cache; one-cycle memory responses.
 - xPack RISC-V GCC 12.2.0-3 (`riscv-none-elf`), `-march=rv32im -mabi=ilp32
   -misa-spec=2.2 -O3 -mcmodel=medany -mstrict-align -falign-functions=16
-  -falign-jumps=4`; no global pointer (see `common/link.ld`).
+  -falign-jumps=4`; no global pointer (see `common/link.ld` in the benchmark directory).
 - Verilator 5.020.
 - Embench `09c2ed8`, `GSF=12`, `WARMUP_HEAT=1`; Tiny/TFLM pins as in
   `mlperf_tiny/prepare.py`, 12 measured inferences after one warm-up.
@@ -24,6 +24,17 @@ Configuration:
 The counts are the measured regions' `mcycle`/`minstret` as read by the
 programs (`Embench cycles=... instret=...`, `TINY_STATS`); on Ibex the
 simulator's own performance-counter printout gives the same values.
+
+## How these were built
+
+scons could not be installed where these runs were recorded, so the Embench
+ELF and hex files were built by `common/fallback/build_embench_without_scons.sh`
+of the benchmark directory (what Embench's sconstruct.py does with the
+Makefile's arguments; the files it builds are byte-identical to the ones run
+here). The simulator was built with `make -C example_tb/core verilate`, MLPerf
+Tiny with its Makefile, and the runs used the commands of `run_embench.sh` and
+`run_tiny.sh`. The scons flow should reproduce these records exactly; it has
+not been run for this record.
 
 ## MLPerf Tiny ad01, 12 measured inferences
 
@@ -34,4 +45,4 @@ simulator's own performance-counter printout gives the same values.
 
 Target arena usage: 8076 bytes of 65,536 reserved.
 The run log is `runlogs/tiny-ad01.log`; `results.json` holds the parsed values.
-The codex record (`codex-20261030`) differs by the counter-control boundary only.
+The codex record (`../codex-20261030`) differs by the counter-control boundary only.

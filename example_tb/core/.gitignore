@@ -14,3 +14,6 @@ csrc
 inter.vpd
 ucli.key
 vc_hdrs.h
+
+# Verilator build of tb_top_verilator (make verilate)
+cobj_dir/

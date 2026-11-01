@@ -57,6 +57,12 @@ make -C example_tb/core/benchmarks/embench
 ./example_tb/core/benchmarks/embench/run_embench.sh
 ```
 
+Embench's build needs scons (`pip install scons`). Where scons cannot be
+installed, `common/fallback/build_embench_without_scons.sh
+example_tb/core/benchmarks/embench` builds the same ELF and hex files (see
+the comments in it). The run scripts take `SIM` and `LOG_DIR` from the
+environment to override the simulator and the log directory.
+
 Each log in `embench/runlogs` ends with
 
 ```
@@ -95,8 +101,11 @@ measured counts (`TINY_STATS iterations=12 cycles=... instructions=...`),
 
 ## Recorded results
 
-`embench/validation` and `mlperf_tiny/validation` keep the records of the
-single-hart runs; `VALIDATION.md` there summarises them. The subfolder
+Each recorded run is kept in `embench/validation/<YYYYMMDD>-<configuration>/`
+and `mlperf_tiny/validation/<YYYYMMDD>-<configuration>/`, with a
+`VALIDATION.md` (configuration, tool versions, how the simulator and the
+programs were built, the results table) and the run logs in `runlogs/`.
+`20261101-default` is the first run of this flow. The subfolder
 `codex-20261030` holds the records of the earlier port (`benchmarks/imt_bench`
 on branch `codex/embench-mlperf-single-hart-20261030`), which linked with a
 global pointer and so has slightly different instruction counts.
