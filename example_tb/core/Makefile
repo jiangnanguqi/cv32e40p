@@ -67,6 +67,16 @@ RTLSRC_VOPT_TB_TOP	:= $(addsuffix _vopt, $(RTLSRC_VLOG_TB_TOP))
 RISCV                    ?= ~/.riscv
 RISCV_EXE_PREFIX         = $(RISCV)/bin/riscv32-unknown-elf-
 
+# verilator configuration (after core-v-verif's cv32e40p/sim/core/Makefile)
+VERILATOR               = verilator
+VERI_FLAGS             +=
+VERI_COMPILE_FLAGS     += -Wno-BLKANDNBLK -Wno-MULTIDRIVEN -Wno-COMBDLY
+VERI_TRACE             ?=
+VERI_OBJ_DIR           ?= cobj_dir
+VERI_CFLAGS            += -O2
+RTLSRC_TB_VERI         := tb_top_verilator.sv cv32e40p_tb_subsystem.sv mm_ram.sv dp_ram.sv \
+                          amo_shim.sv riscv_gnt_stall.sv riscv_rvalid_stall.sv
+
 # assume vsim if no target chosen
 .DEFAULT_GOAL := custom-vsim-run
 
@@ -191,6 +201,41 @@ tb-clean-fp:
 	if [ -d $(VWORK) ]; then rm -r $(VWORK); fi
 	rm -rf transcript vsim.wlf vsim.dbg trace_core*.log \
 	.build-rtl-fp .opt-rtl-fp .lib-rtl-fp *.vcd objdump
+
+###############################################################################
+# Verilator (the simulator used for the Embench and MLPerf Tiny benchmarks,
+# see benchmarks/README.md). WAVES=1 compiles in VCD dumping.
+
+ifneq (${WAVES},)
+VERI_TRACE = --trace
+VERI_CFLAGS += -DVCD_TRACE
+endif
+
+.PHONY: verilate veri-run veri-clean
+
+verilate: $(VERI_OBJ_DIR)/Vtb_top_verilator
+
+# Verilator is run from the object directory with absolute paths: it also
+# looks for modules in the working directory by file name, and this directory
+# holds cv32e40p_fp_wrapper.sv (the vsim FPU build's, not the core's).
+$(VERI_OBJ_DIR)/Vtb_top_verilator: $(CV_CORE_MANIFEST) $(RTLSRC_TB_PKG) $(RTLSRC_TB_VERI) tb_top_verilator.cpp
+	mkdir -p $(VERI_OBJ_DIR)
+	cd $(VERI_OBJ_DIR) && DESIGN_RTL_DIR=$(abspath $(DESIGN_RTL_DIR)) $(VERILATOR) --cc --sv --exe --build \
+		$(VERI_TRACE) \
+		--Wno-lint --Wno-UNOPTFLAT --Wno-MODDUP \
+		--top-module tb_top_verilator \
+		-f $(abspath $(CV_CORE_MANIFEST)) \
+		$(abspath $(RTLSRC_TB_PKG) $(RTLSRC_TB_VERI)) \
+		$(abspath tb_top_verilator.cpp) --Mdir . \
+		-CFLAGS "-std=gnu++14 $(VERI_CFLAGS)" \
+		$(VERI_COMPILE_FLAGS)
+
+# run a program: make veri-run FIRMWARE=path/to/program.hex
+veri-run: verilate
+	$(VERI_OBJ_DIR)/Vtb_top_verilator $(VERI_FLAGS) "+firmware=$(FIRMWARE)"
+
+veri-clean:
+	rm -rf $(VERI_OBJ_DIR)
 
 # rules to generate hex (loadable by simulators) from elf
 %.hex: %.elf
