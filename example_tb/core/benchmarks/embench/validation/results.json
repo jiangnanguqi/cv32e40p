@@ -1,0 +1,135 @@
+{
+  "aha-mont64": {
+    "cycles": 71084712,
+    "instructions": 60674258,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 71095078
+  },
+  "crc32": {
+    "cycles": 58513864,
+    "instructions": 50153938,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 58543862
+  },
+  "depthconv": {
+    "cycles": 37983849,
+    "instructions": 31021371,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 37994597
+  },
+  "edn": {
+    "cycles": 46092545,
+    "instructions": 38487611,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 46151994
+  },
+  "huffbench": {
+    "cycles": 35490513,
+    "instructions": 27572223,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 35773501
+  },
+  "matmult-int": {
+    "cycles": 43993100,
+    "instructions": 36415238,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 44130665
+  },
+  "md5sum": {
+    "cycles": 36322155,
+    "instructions": 31803788,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 36378060
+  },
+  "nettle-aes": {
+    "cycles": 56442143,
+    "instructions": 52503209,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 56517913
+  },
+  "nettle-sha256": {
+    "cycles": 57692156,
+    "instructions": 57084628,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 57709272
+  },
+  "nsichneu": {
+    "cycles": 43409557,
+    "instructions": 26881037,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 43421069
+  },
+  "picojpeg": {
+    "cycles": 42097730,
+    "instructions": 35909504,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 42809609
+  },
+  "qrduino": {
+    "cycles": 41785682,
+    "instructions": 33818336,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 42494862
+  },
+  "sglib-combined": {
+    "cycles": 42282881,
+    "instructions": 30288107,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 42417472
+  },
+  "slre": {
+    "cycles": 37113888,
+    "instructions": 30215130,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 37149035
+  },
+  "statemate": {
+    "cycles": 45444539,
+    "instructions": 41528453,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 45454945
+  },
+  "tarfind": {
+    "cycles": 27785710,
+    "instructions": 12363871,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 27849039
+  },
+  "ud": {
+    "cycles": 29415071,
+    "instructions": 13328645,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 29426137
+  },
+  "wikisort": {
+    "cycles": 11685401,
+    "instructions": 9483754,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 12192908
+  },
+  "xgboost": {
+    "cycles": 48684600,
+    "instructions": 40804518,
+    "exit": 0,
+    "passed": true,
+    "cycles_simulated": 52749742
+  }
+}

@@ -1,0 +1,5 @@
+Embench cycles=48684600 instret=40804518
+Main Exit=0
+EXIT SUCCESS
+Cycles executed: 52749742
+- /home/claude/cv32e40p/example_tb/core/tb_top_verilator.sv:102: Verilog $finish

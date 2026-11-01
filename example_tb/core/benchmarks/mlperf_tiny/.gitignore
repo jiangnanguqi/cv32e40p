@@ -1,0 +1,9 @@
+build/
+.deps/
+/runlogs/
+*.elf
+*.hex
+*.dis
+*.map
+# the records under validation/ are tracked (added with git add -f: the
+# repository's top-level .gitignore excludes *.log and *.json)
